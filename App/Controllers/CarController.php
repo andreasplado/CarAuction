@@ -39,8 +39,6 @@ class CarController
      */
     public function index(Request $request, Response $response, $args)
     {
-        $dbConnection = new DBConnection($this->container);
-        $dbConnection->connectDB();
         return $this->container->get('view')->render(
             $response, 'homepage.twig', [
             'name' => $args['name']
@@ -67,7 +65,6 @@ class CarController
     }
 
     public function ViewCar(Request $request, Response $response, $next){
-
         return $this->container->get('view')->render(
             $response, 'view-car.twig', [
             'name' => $next['name']
@@ -77,9 +74,18 @@ class CarController
 
     public function ViewCars(Request $request, Response $response, $next){
 
+        $dbConnection = new DBConnection($this->container);
+        $conn = $dbConnection->connectDB();
+        $sql = 'SELECT name, make FROM cars ORDER BY name';
+        $data = $conn->query($sql);
+        foreach ($conn->query($sql) as $row) {
+            print $row['name'] . "\t";
+            print $row['make'] . "\t";
+        }
+
         return $this->container->get('view')->render(
             $response, 'view-cars.twig', [
-            'name' => $next['name']
+            'cars' => $data
             ]
         );
     }
