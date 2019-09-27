@@ -1,9 +1,10 @@
 <?php
 
-namespace Controllers;
+namespace \App\Controllers;
 
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
+use \Utils\DBConnection as DBConnection;
 
 /**
  * Class HelloController
@@ -38,6 +39,8 @@ class CarController
      */
     public function index(Request $request, Response $response, $args)
     {
+        $dbConnection = new DBConnection();
+        $dbConnection->connectDB();
         return $this->container->get('view')->render(
             $response, 'homepage.twig', [
             'name' => $args['name']

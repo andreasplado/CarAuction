@@ -16,3 +16,13 @@ Good luck!
 
 How to run:
     php -S localhost:8080 -t public public/index.php
+
+
+
+disable ssl:
+add composer.json:
+    "config": {
+        "disable-tls": true,
+        "secure-http": false
+    }
+ run composer dump-autoload

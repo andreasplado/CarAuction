@@ -6,3 +6,4 @@ require_once 'routes.php';
 
 // Run app
 $app->run();
+

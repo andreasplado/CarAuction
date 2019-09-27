@@ -6,7 +6,11 @@
     },
     "autoload": {
         "psr-4": {
-            "Controllers\\": "controllers/"
+            "App\\": "App"
         }
+    },
+    "config": {
+        "disable-tls": true,
+        "secure-http": false
     }
 }
