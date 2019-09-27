@@ -78,10 +78,6 @@ class CarController
         $conn = $dbConnection->connectDB();
         $sql = 'SELECT name, make FROM cars ORDER BY name';
         $data = $conn->query($sql);
-        foreach ($conn->query($sql) as $row) {
-            print $row['name'] . "\t";
-            print $row['make'] . "\t";
-        }
 
         return $this->container->get('view')->render(
             $response, 'view-cars.twig', [
@@ -91,10 +87,6 @@ class CarController
     }
 
     public function addCar(Request $request, Response $response, $next){
-        $response->getBody()->write('BEFORE');
-        $response = $next($request, $response);
-        $response->getBody()->write('AFTER');
-
         return $this->container->get('view')->render(
             $response, 'add-car.twig', [
             'name' => $next['name']
@@ -136,4 +128,30 @@ class CarController
             ]
         );
     }
+
+    public function addRandomData(Request $request, Response $response, $next){
+        $dbConnection = new DBConnection($this->container);
+        $conn = $dbConnection->connectDB();
+
+        $data = file_get_contents('https://blockchain.info/ticker');
+        $decodedData = json_decode($data);
+        $sql = 'INSERT INTO cars ("make", "name","trim","year","body",
+        "engine_position","engine_type","engine_compression","engine_fuel",
+        "image","country","weight","transmission_type","price")
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ,?);';
+        $stmt = $conn->prepare($query);
+        $stmt->execute([$data->make, $data->name, $data->trim,
+            $data->year, $data->body, $data->engine_position,
+            $data->engine_type, $data->engine_compression,
+            $data->engine_fuel, $data->image, $data->country,
+            $data->weight, $data->transmission, $data->price
+        ]);
+
+        return $this->container->get('view')->render(
+            $response, 'random-data-added.twig', [
+            'name' => $next['name']
+            ]
+        );
+    }
+
 }
