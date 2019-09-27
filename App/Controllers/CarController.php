@@ -39,7 +39,7 @@ class CarController
      */
     public function index(Request $request, Response $response, $args)
     {
-        $dbConnection = new DBConnection();
+        $dbConnection = new DBConnection($this->container);
         $dbConnection->connectDB();
         return $this->container->get('view')->render(
             $response, 'homepage.twig', [
