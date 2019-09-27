@@ -4,7 +4,7 @@ namespace \App\Controllers;
 
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
-use \Utils\DBConnection as DBConnection;
+use \App\Utils\DBConnection as DBConnection;
 
 /**
  * Class HelloController
