@@ -133,19 +133,39 @@ class CarController
         $dbConnection = new DBConnection($this->container);
         $conn = $dbConnection->connectDB();
 
-        $data = file_get_contents('https://blockchain.info/ticker');
+        $data = file_get_contents('https://www.carqueryapi.com/api/0.3/?callback=?&cmd=getModel&model=11459');
         $decodedData = json_decode($data);
-        $sql = 'INSERT INTO cars ("make", "name","trim","year","body",
-        "engine_position","engine_type","engine_compression","engine_fuel",
-        "image","country","weight","transmission_type","price")
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ,?);';
-        $stmt = $conn->prepare($query);
-        $stmt->execute([$data->make, $data->name, $data->trim,
-            $data->year, $data->body, $data->engine_position,
-            $data->engine_type, $data->engine_compression,
-            $data->engine_fuel, $data->image, $data->country,
-            $data->weight, $data->transmission, $data->price
-        ]);
+
+        //Get all data
+        $sql = 'SELECT name FROM cars ORDER BY name';
+        $oldData = $conn->query($sql);
+
+        
+        foreach (array_combine($oldData, $data) as $oldDataItem => $dataItem) {
+            //Chek if any matching results
+            if($oldDataItem->name === $dataItem->name){
+                //update
+                $sql = 'UPDATE cars
+                SET column1 = value1, column2 = value2, ...
+                WHERE name='. ". $dataItem->name. " ."'";
+            }else{
+                //Insert new one
+                $sql = 'INSERT INTO cars ("make", "name","trim","year","body",
+                "engine_position","engine_type","engine_compression","engine_fuel",
+                "image","country","weight","transmission_type","price")
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ,?);';
+                $stmt = $conn->prepare($sql);
+                $stmt->execute([$dataItem->make, $dataItem->name, $dataItem->trim,
+                    $dataItem->year, $dataItem->body, $dataItem->engine_position,
+                    $dataItem->engine_type, $dataItem->engine_compression,
+                    $dataItem->engine_fuel, $dataItem->image, $dataItem->country,
+                    $dataItem->weight, $dataItem->transmission, $dataItem->price
+                ]);
+            }
+        }
+
+
+
 
         return $this->container->get('view')->render(
             $response, 'random-data-added.twig', [
