@@ -40,9 +40,7 @@ class CarController
     public function index(Request $request, Response $response, $args)
     {
         return $this->container->get('view')->render(
-            $response, 'homepage.twig', [
-            'name' => $args['name']
-            ]
+            $response, 'homepage.twig'
         );
     }
 
@@ -58,9 +56,7 @@ class CarController
     public function about(Request $request, Response $response, $args)
     {
         return $this->container->get('view')->render(
-            $response, 'about.twig', [
-            'name' => $args['name']
-            ]
+            $response, 'about.twig'
         );
     }
 
@@ -73,7 +69,6 @@ class CarController
     }
 
     public function ViewCars(Request $request, Response $response, $next){
-
         $dbConnection = new DBConnection($this->container);
         $conn = $dbConnection->connectDB();
         $sql = 'SELECT name, make FROM cars ORDER BY name';
